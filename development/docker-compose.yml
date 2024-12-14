@@ -1,0 +1,8 @@
+version: lastest
+
+services:
+  test-app:
+    image: dockerapp:lastest
+    container_name: app
+    ports:
+      - 8888:8181
