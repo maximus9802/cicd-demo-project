@@ -1,0 +1,36 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login Docker Hub
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+      - name: Build the Docker image
+        env:
+          DOCKER_IMAGE: ${{secrets.DOCKER_IMAGE}}
+          IMAGE_VERSION: ${{secrets.DOCKER_IMAGE_VERSION}}
+        run: docker build -t $DOCKER_IMAGE:$IMAGE_VERSION .
+
+      - name: Verify Docker image
+        run: docker images | grep ${{ secrets.DOCKER_IMAGE }}:${{ secrets.DOCKER_IMAGE_VERSION }}
+
+      - name: Push to Dockerhub
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+          DOCKER_IMAGE: ${{secrets.DOCKER_IMAGE}}
+          IMAGE_VERSION: ${{secrets.DOCKER_IMAGE_VERSION}}
+        run: docker push $DOCKER_USERNAME/$DOCKER_IMAGE:$IMAGE_VERSION
