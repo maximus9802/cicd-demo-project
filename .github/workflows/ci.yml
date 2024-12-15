@@ -25,12 +25,10 @@ jobs:
           IMAGE_VERSION: ${{secrets.DOCKER_IMAGE_VERSION}}
         run: docker build -t $DOCKER_IMAGE:$IMAGE_VERSION .
 
-      - name: Verify Docker image
-        run: docker images | grep ${{ secrets.DOCKER_IMAGE }}:${{ secrets.DOCKER_IMAGE_VERSION }}
+      - name: Verify Docker imagedockerapp
+        run: docker images | grep dockerapp:1.1
 
       - name: Push to Dockerhub
         env:
           DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-          DOCKER_IMAGE: ${{secrets.DOCKER_IMAGE}}
-          IMAGE_VERSION: ${{secrets.DOCKER_IMAGE_VERSION}}
-        run: docker push $DOCKER_USERNAME/$DOCKER_IMAGE:$IMAGE_VERSION
+        run: docker push $DOCKER_USERNAME/dockerapp:1.1
